@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PDF Editor</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js">
+  </script>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">📄 PDF Editor</div>
+
+    <div class="header-buttons">
+
+      <label class="upload-btn">
+        📂 Open PDF
+        <input
+          type="file"
+          id="pdfInput"
+          accept="application/pdf">
+      </label>
+
+      <button id="downloadBtn">
+        ⬇ Download
+      </button>
+
+    </div>
+  </header>
+
+
+  <div class="toolbar">
+
+    <button id="addTextBtn">
+      T Add Text
+    </button>
+
+    <button id="drawBtn">
+      ✏ Draw
+    </button>
+
+    <button id="undoBtn">
+      ↩ Undo
+    </button>
+
+    <button id="clearBtn">
+      🗑 Clear
+    </button>
+
+    <button id="prevPage">
+      ◀
+    </button>
+
+    <span id="pageInfo">
+      Page 0 / 0
+    </span>
+
+    <button id="nextPage">
+      ▶
+    </button>
+
+    <button id="rotateBtn">
+      ⟳ Rotate
+    </button>
+
+  </div>
+
+
+  <main>
+
+    <aside>
+
+      <h3>Pages</h3>
+
+      <div id="thumbnails"></div>
+
+    </aside>
+
+
+    <section class="workspace">
+
+      <div id="emptyState">
+
+        <div class="big-icon">
+          📄
+        </div>
+
+        <h2>
+          Open a PDF
+        </h2>
+
+        <p>
+          Select a PDF file to start editing.
+        </p>
+
+      </div>
+
+
+      <div id="pdfContainer" class="hidden">
+
+        <div id="canvasWrapper">
+
+          <canvas id="pdfCanvas"></canvas>
+
+          <canvas id="drawingCanvas"></canvas>
+
+          <div id="textLayer"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script
+    type="module"
+    src="app.js">
+  </script>
+
+</body>
+</html>
