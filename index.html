@@ -1,131 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>PDF Editor</title>
+  <title>দুর্গাপূজা বাংলা গান</title>
 
   <link rel="stylesheet" href="style.css">
-
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js">
-  </script>
 </head>
 
 <body>
 
-  <header>
-    <div class="logo">📄 PDF Editor</div>
+  <header class="hero">
 
-    <div class="header-buttons">
+    <div class="bell">🔔</div>
 
-      <label class="upload-btn">
-        📂 Open PDF
-        <input
-          type="file"
-          id="pdfInput"
-          accept="application/pdf">
-      </label>
+    <h1>🌺 দুর্গাপূজা 🌺</h1>
 
-      <button id="downloadBtn">
-        ⬇ Download
-      </button>
+    <p>বাংলা দুর্গাপূজার গান ও আগমনী সংগ্রহ</p>
 
+    <div class="searchBox">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="গান খুঁজুন..."
+      >
+      <button onclick="searchSongs()">🔍</button>
     </div>
+
   </header>
 
 
-  <div class="toolbar">
+  <nav class="categories">
 
-    <button id="addTextBtn">
-      T Add Text
+    <button onclick="filterSongs('all')">
+      সব গান
     </button>
 
-    <button id="drawBtn">
-      ✏ Draw
+    <button onclick="filterSongs('agomoni')">
+      🌸 আগমনী
     </button>
 
-    <button id="undoBtn">
-      ↩ Undo
+    <button onclick="filterSongs('mahalaya')">
+      🪔 মহালয়া
     </button>
 
-    <button id="clearBtn">
-      🗑 Clear
+    <button onclick="filterSongs('puja')">
+      🥁 পুজোর গান
     </button>
 
-    <button id="prevPage">
-      ◀
+    <button onclick="filterSongs('bhakti')">
+      🙏 ভক্তিগীতি
     </button>
 
-    <span id="pageInfo">
-      Page 0 / 0
-    </span>
-
-    <button id="nextPage">
-      ▶
-    </button>
-
-    <button id="rotateBtn">
-      ⟳ Rotate
-    </button>
-
-  </div>
+  </nav>
 
 
   <main>
 
-    <aside>
+    <h2>🎵 বাংলা দুর্গাপূজার গান</h2>
 
-      <h3>Pages</h3>
-
-      <div id="thumbnails"></div>
-
-    </aside>
-
-
-    <section class="workspace">
-
-      <div id="emptyState">
-
-        <div class="big-icon">
-          📄
-        </div>
-
-        <h2>
-          Open a PDF
-        </h2>
-
-        <p>
-          Select a PDF file to start editing.
-        </p>
-
-      </div>
-
-
-      <div id="pdfContainer" class="hidden">
-
-        <div id="canvasWrapper">
-
-          <canvas id="pdfCanvas"></canvas>
-
-          <canvas id="drawingCanvas"></canvas>
-
-          <div id="textLayer"></div>
-
-        </div>
-
-      </div>
-
-    </section>
+    <div id="songList"></div>
 
   </main>
 
 
-  <script
-    type="module"
-    src="app.js">
-  </script>
+  <footer>
+
+    <div>🌺 শুভ দুর্গাপূজা 🌺</div>
+
+    <p>
+      বাংলা গান • আগমনী • মহালয়া • দুর্গাপূজা
+    </p>
+
+  </footer>
+
+
+  <script src="app.js"></script>
 
 </body>
 </html>
