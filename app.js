@@ -1,590 +1,211 @@
-import * as pdfjsLib from
-"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
+const songs = [
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+  {
+    title: "আগমনী গান ২০২৪",
+    category: "agomoni",
+    icon: "🌸",
+    channel: "SM Studio",
+    video: "A9h_Qv1oITc"
+  },
 
-const {
-  PDFDocument,
-  rgb,
-  degrees
-} = PDFLib;
+  {
+    title: "দুর্গাপূজা গান কালেকশন",
+    category: "puja",
+    icon: "🥁",
+    channel: "Bengali Song Official",
+    video: "wwViMUglWns"
+  },
 
-let pdfDocument = null;
-let pdfBytes = null;
-let currentPage = 1;
-let totalPages = 0;
-let scale = 1.4;
+  {
+    title: "এসেছে মা এসেছে",
+    category: "agomoni",
+    icon: "🌺",
+    channel: "SM Studio",
+    video: "A9h_Qv1oITc"
+  },
 
-let drawing = false;
-let drawMode = false;
+  {
+    title: "জয় মা জয় দুর্গা",
+    category: "bhakti",
+    icon: "🙏",
+    channel: "SM Studio",
+    video: "A9h_Qv1oITc"
+  },
 
-const pdfInput = document.getElementById("pdfInput");
-const pdfCanvas = document.getElementById("pdfCanvas");
-const drawingCanvas = document.getElementById("drawingCanvas");
+  {
+    title: "ঢাক বাজা কাঁসর বাজা",
+    category: "puja",
+    icon: "🥁",
+    channel: "Bengali Song Official",
+    video: "wwViMUglWns"
+  }
 
-const pdfCtx = pdfCanvas.getContext("2d");
-const drawCtx = drawingCanvas.getContext("2d");
-
-const canvasWrapper = document.getElementById("canvasWrapper");
-const thumbnails = document.getElementById("thumbnails");
-
-const emptyState = document.getElementById("emptyState");
-const pdfContainer = document.getElementById("pdfContainer");
-
-const pageInfo = document.getElementById("pageInfo");
-
-
-// =============================
-// OPEN PDF
-// =============================
-
-pdfInput.addEventListener("change", async (event) => {
-
-  const file = event.target.files[0];
-
-  if (!file) return;
-
-  pdfBytes = await file.arrayBuffer();
-
-  pdfDocument = await pdfjsLib.getDocument({
-    data: pdfBytes.slice(0)
-  }).promise;
-
-  totalPages = pdfDocument.numPages;
-  currentPage = 1;
-
-  emptyState.classList.add("hidden");
-  pdfContainer.classList.remove("hidden");
-
-  createThumbnails();
-
-  await renderPage(currentPage);
-});
+];
 
 
-// =============================
-// RENDER PAGE
-// =============================
-
-async function renderPage(pageNumber) {
-
-  if (!pdfDocument) return;
-
-  const page = await pdfDocument.getPage(pageNumber);
-
-  const viewport = page.getViewport({
-    scale: scale
-  });
-
-  pdfCanvas.width = viewport.width;
-  pdfCanvas.height = viewport.height;
-
-  drawingCanvas.width = viewport.width;
-  drawingCanvas.height = viewport.height;
-
-  canvasWrapper.style.width =
-    viewport.width + "px";
-
-  canvasWrapper.style.height =
-    viewport.height + "px";
-
-  await page.render({
-    canvasContext: pdfCtx,
-    viewport: viewport
-  }).promise;
-
-  drawCtx.clearRect(
-    0,
-    0,
-    drawingCanvas.width,
-    drawingCanvas.height
-  );
-
-  pageInfo.textContent =
-    `Page ${currentPage} / ${totalPages}`;
-
-  updateActiveThumbnail();
-}
+let currentCategory = "all";
 
 
-// =============================
-// THUMBNAILS
-// =============================
+function showSongs(list) {
 
-async function createThumbnails() {
+  const container =
+    document.getElementById("songList");
 
-  thumbnails.innerHTML = "";
+  container.innerHTML = "";
 
-  for (let i = 1; i <= totalPages; i++) {
 
-    const page =
-      await pdfDocument.getPage(i);
+  if (list.length === 0) {
 
-    const viewport =
-      page.getViewport({
-        scale: 0.2
-      });
+    container.innerHTML = `
+      <div style="
+        text-align:center;
+        padding:50px;
+        color:#ffd166;
+      ">
+        😔 কোনো গান পাওয়া যায়নি
+      </div>
+    `;
 
-    const canvas =
-      document.createElement("canvas");
+    return;
+  }
 
-    canvas.width =
-      viewport.width;
 
-    canvas.height =
-      viewport.height;
+  list.forEach(song => {
 
-    const ctx =
-      canvas.getContext("2d");
-
-    await page.render({
-      canvasContext: ctx,
-      viewport: viewport
-    }).promise;
-
-    const box =
+    const card =
       document.createElement("div");
 
-    box.className =
-      "thumbnail";
+    card.className =
+      "song-card";
 
-    box.dataset.page = i;
 
-    box.appendChild(canvas);
+    card.innerHTML = `
 
-    box.addEventListener(
-      "click",
-      async () => {
+      <div class="song-title">
 
-        currentPage = i;
+        <div class="song-icon">
+          ${song.icon}
+        </div>
 
-        await renderPage(
-          currentPage
-        );
+        <div>
 
-      }
-    );
+          <h3>
+            ${song.title}
+          </h3>
 
-    thumbnails.appendChild(box);
-  }
+          <span>
+            ${song.channel}
+          </span>
 
-  updateActiveThumbnail();
+        </div>
+
+      </div>
+
+
+      <div class="video">
+
+        <iframe
+          src="https://www.youtube.com/embed/${song.video}"
+          title="${song.title}"
+          allow="
+            accelerometer;
+            autoplay;
+            clipboard-write;
+            encrypted-media;
+            gyroscope;
+            picture-in-picture;
+            web-share
+          "
+          allowfullscreen>
+        </iframe>
+
+      </div>
+
+    `;
+
+
+    container.appendChild(card);
+
+  });
+
 }
 
 
-function updateActiveThumbnail() {
+function filterSongs(category) {
 
-  document
-    .querySelectorAll(".thumbnail")
-    .forEach(item => {
+  currentCategory = category;
 
-      item.classList.remove(
-        "active"
-      );
 
-      if (
-        Number(item.dataset.page)
-        === currentPage
-      ) {
+  if (category === "all") {
 
-        item.classList.add(
-          "active"
-        );
+    showSongs(songs);
 
-      }
+    return;
 
-    });
+  }
+
+
+  const filtered =
+    songs.filter(
+      song =>
+        song.category === category
+    );
+
+
+  showSongs(filtered);
+
 }
 
 
-// =============================
-// PAGE NAVIGATION
-// =============================
+function searchSongs() {
 
-document
-  .getElementById("prevPage")
-  .addEventListener(
-    "click",
-    async () => {
+  const query =
+    document
+      .getElementById("searchInput")
+      .value
+      .toLowerCase()
+      .trim();
 
-      if (currentPage <= 1)
-        return;
 
-      currentPage--;
+  let filtered = songs;
 
-      await renderPage(
-        currentPage
+
+  if (currentCategory !== "all") {
+
+    filtered =
+      filtered.filter(
+        song =>
+          song.category ===
+          currentCategory
       );
-    }
-  );
-
-
-document
-  .getElementById("nextPage")
-  .addEventListener(
-    "click",
-    async () => {
-
-      if (
-        currentPage >= totalPages
-      )
-        return;
-
-      currentPage++;
-
-      await renderPage(
-        currentPage
-      );
-    }
-  );
-
-
-// =============================
-// DRAW
-// =============================
-
-document
-  .getElementById("drawBtn")
-  .addEventListener(
-    "click",
-    () => {
-
-      drawMode = !drawMode;
-
-      drawingCanvas.style.pointerEvents =
-        drawMode
-          ? "auto"
-          : "none";
-
-    }
-  );
-
-
-drawingCanvas.addEventListener(
-  "pointerdown",
-  (e) => {
-
-    if (!drawMode) return;
-
-    drawing = true;
-
-    drawCtx.beginPath();
-
-    drawCtx.moveTo(
-      e.offsetX,
-      e.offsetY
-    );
 
   }
-);
 
 
-drawingCanvas.addEventListener(
-  "pointermove",
-  (e) => {
+  if (query) {
 
-    if (
-      !drawing ||
-      !drawMode
-    )
-      return;
-
-    drawCtx.lineWidth = 3;
-
-    drawCtx.lineCap = "round";
-
-    drawCtx.strokeStyle =
-      "#2563eb";
-
-    drawCtx.lineTo(
-      e.offsetX,
-      e.offsetY
-    );
-
-    drawCtx.stroke();
+    filtered =
+      filtered.filter(
+        song =>
+          song.title
+            .toLowerCase()
+            .includes(query)
+      );
 
   }
-);
 
 
-drawingCanvas.addEventListener(
-  "pointerup",
-  () => {
+  showSongs(filtered);
 
-    drawing = false;
+}
 
-  }
-);
-
-
-// =============================
-// ADD TEXT
-// =============================
 
 document
-  .getElementById("addTextBtn")
+  .getElementById("searchInput")
   .addEventListener(
-    "click",
-    () => {
-
-      if (!pdfDocument)
-        return;
-
-      const input =
-        document.createElement(
-          "input"
-        );
-
-      input.className =
-        "text-editor";
-
-      input.placeholder =
-        "Type text...";
-
-      input.style.left =
-        "40px";
-
-      input.style.top =
-        "40px";
-
-      document
-        .getElementById(
-          "textLayer"
-        )
-        .appendChild(input);
-
-      input.focus();
-
-      input.addEventListener(
-        "keydown",
-        (e) => {
-
-          if (
-            e.key === "Enter"
-          ) {
-
-            input.blur();
-
-          }
-
-        }
-      );
-
-    }
+    "input",
+    searchSongs
   );
 
 
-// =============================
-// CLEAR DRAWING
-// =============================
-
-document
-  .getElementById("clearBtn")
-  .addEventListener(
-    "click",
-    () => {
-
-      drawCtx.clearRect(
-        0,
-        0,
-        drawingCanvas.width,
-        drawingCanvas.height
-      );
-
-    }
-  );
-
-
-// =============================
-// ROTATE PAGE
-// =============================
-
-document
-  .getElementById("rotateBtn")
-  .addEventListener(
-    "click",
-    async () => {
-
-      if (!pdfBytes)
-        return;
-
-      const pdf =
-        await PDFDocument.load(
-          pdfBytes
-        );
-
-      const page =
-        pdf.getPages()[
-          currentPage - 1
-        ];
-
-      const oldRotation =
-        page.getRotation().angle;
-
-      page.setRotation(
-        degrees(
-          (oldRotation + 90) % 360
-        )
-      );
-
-      pdfBytes =
-        await pdf.save();
-
-      pdfDocument =
-        await pdfjsLib
-          .getDocument({
-            data:
-              pdfBytes.slice(0)
-          })
-          .promise;
-
-      await renderPage(
-        currentPage
-      );
-
-    }
-  );
-
-
-// =============================
-// DOWNLOAD
-// =============================
-
-document
-  .getElementById("downloadBtn")
-  .addEventListener(
-    "click",
-    async () => {
-
-      if (!pdfBytes) {
-
-        alert(
-          "Please open a PDF first."
-        );
-
-        return;
-      }
-
-      const pdf =
-        await PDFDocument.load(
-          pdfBytes
-        );
-
-      const pages =
-        pdf.getPages();
-
-      const page =
-        pages[currentPage - 1];
-
-
-      // Add drawing
-
-      if (
-        drawingCanvas.width > 0
-      ) {
-
-        const pngData =
-          drawingCanvas.toDataURL(
-            "image/png"
-          );
-
-        const pngImage =
-          await pdf.embedPng(
-            pngData
-          );
-
-        page.drawImage(
-          pngImage,
-          {
-            x: 0,
-            y: 0,
-            width:
-              page.getWidth(),
-            height:
-              page.getHeight(),
-            opacity: 1
-          }
-        );
-
-      }
-
-
-      // Add text
-
-      const textInputs =
-        document.querySelectorAll(
-          ".text-editor"
-        );
-
-      textInputs.forEach(
-        (input) => {
-
-          const text =
-            input.value.trim();
-
-          if (!text)
-            return;
-
-          const x =
-            parseFloat(
-              input.style.left
-            ) / scale;
-
-          const y =
-            page.getHeight() -
-            parseFloat(
-              input.style.top
-            ) / scale -
-            20;
-
-          page.drawText(
-            text,
-            {
-              x: x,
-              y: y,
-              size: 18,
-              color:
-                rgb(0, 0, 0)
-            }
-          );
-
-        }
-      );
-
-
-      const output =
-        await pdf.save();
-
-      const blob =
-        new Blob(
-          [output],
-          {
-            type:
-              "application/pdf"
-          }
-        );
-
-      const url =
-        URL.createObjectURL(
-          blob
-        );
-
-      const a =
-        document.createElement(
-          "a"
-        );
-
-      a.href = url;
-
-      a.download =
-        "edited-pdf.pdf";
-
-      a.click();
-
-      URL.revokeObjectURL(
-        url
-      );
-
-    }
-  );
+showSongs(songs);
